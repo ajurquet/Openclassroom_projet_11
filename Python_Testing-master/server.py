@@ -60,6 +60,8 @@ def book(competition, club):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
+
+    places_bought = 0
    
     competitions_list = []
     for comp in competitions:
@@ -74,7 +76,9 @@ def purchasePlaces():
     club = clubs_list[0]
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
-    
+    places_bought += placesRequired
+    print (places_bought)
+
     if int(request.form['places']) > 12 :
         flash("You can't book more than 12 places in a competition")
     elif int(request.form['places']) > int(club["points"]):
@@ -84,6 +88,10 @@ def purchasePlaces():
         club["points"] = int(club["points"]) - placesRequired     
         flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
+
+# Ils devraient voir un message confirmant le nombre de places achetées, ou un
+# message indiquant que le concours est complet. Les points utilisés doivent être
+# déduits du total précédent.
 
 
 # TODO: Add route for points display
