@@ -1,5 +1,5 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask, render_template, request, redirect, flash,url_for
 
 
 def loadClubs():
@@ -72,7 +72,25 @@ def purchasePlaces():
 
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
     club["points"] = int(club["points"]) - placesRequired
-    # c'est ici qu'il faut enlever dans places dans le json
+    
+    # c'est ici qu'il faut enlever des places dans le json
+    
+    # for clb in clubs:
+    #     if clb["name"] == request.form['club']:
+    with open("clubs.json", "w") as clubs_file:
+        print(clubs_file)
+        json.dump(clubs[0], clubs_file)
+
+        # json.dump(club, clubs_file)
+
+            # print(clb["name"])
+            # clb["points"] = club["points"]
+            # print(request.form['club'])
+        
+        
+        # TODO chercher la ligne à mettre à jour dans le json
+
+
 
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
