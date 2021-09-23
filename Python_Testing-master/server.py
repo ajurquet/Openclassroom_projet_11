@@ -69,12 +69,14 @@ def purchasePlaces():
     club = clubs_list[0]
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
+    
+    if int(request.form['places']) > 12 :
+        flash("You can't book more than 12 places in a competition")
 
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-    club["points"] = int(club["points"]) - placesRequired
-    # c'est ici qu'il faut enlever dans places dans le json
-
-    flash('Great-booking complete!')
+    else:
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+        club["points"] = int(club["points"]) - placesRequired     
+        flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
