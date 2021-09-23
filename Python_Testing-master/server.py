@@ -12,7 +12,6 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)['competitions']
     return listOfCompetitions
 
-
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
@@ -81,7 +80,6 @@ def purchasePlaces():
 
 
 # TODO: Add route for points display
-
 
 @app.route('/logout')
 def logout():
