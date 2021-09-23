@@ -72,7 +72,8 @@ def purchasePlaces():
     
     if int(request.form['places']) > 12 :
         flash("You can't book more than 12 places in a competition")
-
+    elif int(request.form['places']) > int(club["points"]):
+        flash("You don't have enough points")
     else:
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
         club["points"] = int(club["points"]) - placesRequired     
