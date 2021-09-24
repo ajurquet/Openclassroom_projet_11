@@ -18,7 +18,6 @@ app.secret_key = 'something_special'
 competitions = loadCompetitions()
 clubs = loadClubs()
 
-
 places_booked_counter = 0
 
 @app.route('/')
@@ -61,8 +60,6 @@ def book(competition, club):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
-
-    places_bought = 0
    
     competitions_list = []
     for comp in competitions:
