@@ -19,6 +19,8 @@ competitions = loadCompetitions()
 clubs = loadClubs()
 
 
+places_booked_counter = 0
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -69,7 +71,10 @@ def purchasePlaces():
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
     
-    if int(request.form['places']) > 12 :
+    global places_booked_counter
+    places_booked_counter += int(request.form['places'])
+
+    if places_booked_counter > 12 :
         flash("You can't book more than 12 places in a competition")
 
     else:
