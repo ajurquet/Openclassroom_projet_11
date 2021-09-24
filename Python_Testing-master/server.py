@@ -12,13 +12,14 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)['competitions']
     return listOfCompetitions
 
-
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
 
+
+places_booked_counter = 0
 
 @app.route('/')
 def index():
@@ -76,10 +77,11 @@ def purchasePlaces():
     club = clubs_list[0]
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
-    places_bought += placesRequired
-    print (places_bought)
+    
+    global places_booked_counter
+    places_booked_counter += int(request.form['places'])
 
-    if int(request.form['places']) > 12 :
+    if places_booked_counter > 12 :
         flash("You can't book more than 12 places in a competition")
     elif int(request.form['places']) > int(club["points"]):
         flash("You don't have enough points")
@@ -95,7 +97,6 @@ def purchasePlaces():
 
 
 # TODO: Add route for points display
-
 
 @app.route('/logout')
 def logout():
