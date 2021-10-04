@@ -12,6 +12,7 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)['competitions']
     return listOfCompetitions
 
+
 app = Flask(__name__)
 app.secret_key = 'something_special'
 
@@ -19,6 +20,7 @@ competitions = loadCompetitions()
 clubs = loadClubs()
 
 places_booked_counter = 0
+
 
 @app.route('/')
 def index():
@@ -34,7 +36,6 @@ def showSummary():
     else:
         return render_template('welcome.html',club=club,competitions=competitions)
           
-
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
@@ -91,12 +92,6 @@ def purchasePlaces():
             flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
-# Ils devraient voir un message confirmant le nombre de places achetées, ou un
-# message indiquant que le concours est complet. Les points utilisés doivent être
-# déduits du total précédent.
-
-
-# TODO: Add route for points display
 
 @app.route('/board')
 def board():
