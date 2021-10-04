@@ -83,9 +83,12 @@ def purchasePlaces():
     elif int(request.form['places']) > int(club["points"]):
         flash("You don't have enough points")
     else:
-        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-        club["points"] = int(club["points"]) - placesRequired     
-        flash('Great-booking complete!')
+        if int(competition['numberOfPlaces']) < int(request.form['places']):
+            flash("There is not enough places in the competitions !")
+        else:
+            competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+            club["points"] = int(club["points"]) - placesRequired     
+            flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
 # Ils devraient voir un message confirmant le nombre de places achetées, ou un
