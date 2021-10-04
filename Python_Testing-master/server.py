@@ -20,6 +20,7 @@ clubs = loadClubs()
 
 places_booked_counter = 0
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -32,9 +33,8 @@ def showSummary():
     except IndexError:
         return redirect(url_for('index'))
     else:
-        return render_template('welcome.html',club=club,competitions=competitions)
+        return render_template('welcome.html',club=club, competitions=competitions)
           
-
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
@@ -92,8 +92,6 @@ def purchasePlaces():
 # message indiquant que le concours est complet. Les points utilisés doivent être
 # déduits du total précédent.
 
-
-# TODO: Add route for points display
 
 @app.route('/board')
 def board():
