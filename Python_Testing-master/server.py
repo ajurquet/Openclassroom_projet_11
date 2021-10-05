@@ -23,11 +23,17 @@ places_booked_counter = 0
 
 @app.route('/')
 def index():
+    """
+    Page de connexion
+    """
     return render_template('index.html')
 
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
+    """
+    Affichage des compétitions
+    """
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
     except IndexError:
@@ -38,6 +44,9 @@ def showSummary():
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
+    """
+    Affichage de la compétition sélectionné
+    """
 
     clubs_list = []
     for clb in clubs:
@@ -60,6 +69,9 @@ def book(competition, club):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
+    """
+    Confirme la réservation et retourne à l'affichage des compétitions
+    """
    
     competitions_list = []
     for comp in competitions:
@@ -74,7 +86,7 @@ def purchasePlaces():
     club = clubs_list[0]
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
-    
+  
     global places_booked_counter
     places_booked_counter += int(request.form['places'])
 
@@ -87,10 +99,6 @@ def purchasePlaces():
         club["points"] = int(club["points"]) - placesRequired     
         flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
-
-# Ils devraient voir un message confirmant le nombre de places achetées, ou un
-# message indiquant que le concours est complet. Les points utilisés doivent être
-# déduits du total précédent.
 
 
 @app.route('/board')

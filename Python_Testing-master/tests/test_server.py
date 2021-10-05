@@ -8,15 +8,21 @@ server.app.config["TESTING"] = True
 client = server.app.test_client()
 
 
-server.clubs = [
+@pytest.fixture
+def clubs():
+    clubs = server.clubs = [
     {
         "name":"Test",
         "email":"test@test.com",
         "points":"20"
     }
-]
+    ]
+    yield clubs
 
-server.competitions = [
+
+@pytest.fixture
+def competitions():
+    competitions = server.competitions = [
         {
             "name": "Test Festival 2018",
             "date": "2018-03-27 10:00:00",
@@ -27,17 +33,18 @@ server.competitions = [
             "date": "2025-03-27 10:00:00",
             "numberOfPlaces": "25"
         }
-]
+        ]
+    yield competitions
+    
 
-
-def test_check_if_a_user_exists():
+def test_check_if_a_user_exists(clubs):
     """
     GIVEN a email
     WHEN a user try to connet with this email
     THEN check if the email exists, and redirect the user
     """
 
-    response = client.post("/showSummary", data={'email': 'test@test.com'})
+    response = client.post("/showSummary", data=clubs[0])
     assert response.status_code == 200
     assert b"test@test.com" in response.data
 
@@ -66,7 +73,7 @@ def test_index_url_is_online():
     assert b"To the clubs display board" in response.data
 
 
-def test_competition_booking_url_is_online():
+def test_competition_booking_url_is_online(competitions):
 
     with client as c:
         response = c.get("/book/Test%20Festival_2025/Test")
@@ -74,64 +81,12 @@ def test_competition_booking_url_is_online():
         assert b"Test Festival 2025"
 
 
-def test_booking_a_competition():
-    # with client as c:
-    response = client.post("/purchasePlaces", data={"places": "5"})
-    assert response.status_code == 200
-    assert b"Great-booking complete!" in response.data
-
-
-# @app.route('/book/<competition>/<club>')
-# def book(competition, club):
-
-#     clubs_list = []
-#     for clb in clubs:
-#         if clb['name'] == club:
-#             clubs_list.append(clb)
-#     foundClub = clubs_list[0]
-
-#     competitions_list = []
-#     for cmp in competitions:
-#         if cmp['name'] == competition:
-#             competitions_list.append(cmp)
-#     foundCompetition = competitions_list[0]
+def test_booking_a_competition(clubs, competitions):
     
-#     if foundClub and foundCompetition:
-#         return render_template('booking.html', club=foundClub, competition=foundCompetition)
-#     else:
-#         flash("Something went wrong-please try again")
-#         return render_template('welcome.html', club=club, competitions=competitions)
+    with client as c:
+        form_data = request.form["places"]
+        response = c.post("/purchasePlaces", data=form_data)
+        assert response.status_code == 200
 
-
-# @pytest.fixture
-# def mock_loadClubs(mock):
-#     mock.patch('server.loadClubs', return_value="Toto")
-
-# @pytest.fixture
-# def mock_loadCompetitions(mock):
-#     mock.patch('server.loadClubs', return_value="Toto")
-
-
-    # monkeypatch.setattr("clubs.json", "tests.mock_clubs.json")
-
-    # result = showSummary()
-    # assert result == redirect to "welcome.html"
-
-
-    # with open('mock_competitions.json') as comps:
-    #     listOfCompetitions = json.load(comps)['competitions']
-    # return listOfCompetitions
-
-
-# mock_competitions = mock_loadCompetitions()
-# mock_clubs = mock_loadClubs()
-
-# @pytest.fixture
-# def client():
-#     app = create_app({'TESTING': True})
-
-#     with app.test_client() as client:
-#         with app.app_context():
-#             yield client
 
 
