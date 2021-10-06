@@ -81,26 +81,30 @@ def test_competition_booking_url_is_online(competitions):
         assert b"Test Festival 2025"
 
 
-def test_booking_a_competition():
+def test_booking_a_competition(clubs, competitions):
     """
     GIVEN a user filling a form to book a competition
     WHEN the '/purchasePlaces' page get the form request (POST)
     THEN check is the status code returned is 200, and if a text is in the response 
     """
     with client as c:
-        response = c.post("/purchasePlaces", data={"places": "4", "club": "Test", "competition": "Test Festival 2018"})
+        response = c.post("/purchasePlaces", data={"places": "4", "club": clubs[0]["name"],
+                                                    "competition": competitions[0]["name"]
+                                                    })
         assert response.status_code == 200
         assert b"Great, booking complete!"
 
 
-def test_booking_more_than_12_places():
+def test_booking_more_than_12_places(clubs, competitions):
     """
     GIVEN a user filling a form to book a competition, trying to book more than 12 places
     WHEN the '/purchasePlaces' page get the form request (POST)
     THEN check is the status code returned is 200, and if a text is in the response 
     """
     with client as c:
-        response = c.post("/purchasePlaces", data={"places": "15", "club": "Test", "competition": "Test Festival 2018"})
+        response = c.post("/purchasePlaces", data={"places": "15", "club": clubs[0]["name"],
+                                                    "competition": competitions[0]["name"]
+                                                    })
         assert response.status_code == 200
         assert b"You can't book more than 12 places in a competition"
 
@@ -125,3 +129,19 @@ def test_logout_url_redirect_to_index():
     """
     response = client.get("/logout")
     assert response.status_code == 302
+
+
+def test_3_points_to_book_a_competition(clubs, competitions):
+    """
+    GIVEN a user filling a form to book a competition.
+    WHEN the '/purchasePlaces' page get the form request (POST)
+    THEN check is the status code returned is 200, and if it removes 3 points to the competitions points
+    """
+    old_clubs_points = int(clubs[0]["points"])
+    
+    with client as c:
+        response = c.post("/purchasePlaces", data={"places": "1", "club": clubs[0]["name"],
+                                                    "competition": competitions[0]["name"]
+                                                    })
+        assert response.status_code == 200
+        assert old_clubs_points - 3 == int(clubs[0]["points"])
