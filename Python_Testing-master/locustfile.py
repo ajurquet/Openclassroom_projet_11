@@ -2,6 +2,9 @@ import time
 from locust import HttpUser, task, between
 
 
+from tests.test_server import competitions, clubs
+
+
 class LocustTest(HttpUser):
     wait_time = between(1, 3)
 
@@ -15,10 +18,26 @@ class LocustTest(HttpUser):
        
     @task
     def test_booking_a_competition(self):
-        self.client.post("http://127.0.0.1:5000/purchasePlaces", data={"places": "5"})
-
+        response = self.client.get("http://127.0.0.1:5000/purchasePlaces", data={"places": "4", "club": "Test", "competition": "Test Festival 2018"})
+        
+    # @task
+    # def test_booking_a_competition(self):
+    #     self.client.post("http://127.0.0.1:5000/purchasePlaces", data={"places": "4"},
+    #                                                                  clubs={"name":"Test",
+    #                                                                     "email":"test@test.com",
+    #                                                                     "points":"20"
+    #                                                                 },
+    #                                                                 competitions = {"name": "Test Festival_2025",
+    #                                                                 "date": "2025-03-27 10:00:00",
+    #                                                                 "numberOfPlaces": "25"
+    #                                                             })
+           
+         
     def on_start(self):
         self.client.post("http://127.0.0.1:5000/showSummary", data={'email': 'test@test.com'})
+
+    def on_stop(self):
+        self.client.get("http://127.0.0.1:5000/logout")
     
         
 
