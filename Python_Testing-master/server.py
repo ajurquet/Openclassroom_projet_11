@@ -1,5 +1,6 @@
+from datetime import datetime
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for
+from flask import Flask, render_template, request, redirect, flash,url_for
 
 
 def loadClubs():
@@ -18,7 +19,7 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
-
+date_now = datetime.now()
 
 
 @app.route('/')
@@ -27,6 +28,11 @@ def index():
     Page de connexion
     """
     return render_template('index.html')
+
+
+@app.template_filter()
+def str_to_datetime(value):
+    return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
 
 @app.route('/showSummary',methods=['POST'])
@@ -39,7 +45,7 @@ def showSummary():
     except IndexError:
         return redirect(url_for('index'))
     else:
-        return render_template('welcome.html',club=club, competitions=competitions)
+        return render_template('welcome.html',club=club, competitions=competitions, date_now=date_now)
           
 
 @app.route('/book/<competition>/<club>')
@@ -98,7 +104,7 @@ def purchasePlaces():
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
         club["points"] = int(club["points"]) - (placesRequired + 2)  
         flash('Great, booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template('welcome.html', club=club, competitions=competitions, date_now=date_now)
 
 
 @app.route('/board')
