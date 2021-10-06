@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
 
@@ -18,6 +19,7 @@ app.secret_key = 'something_special'
 
 competitions = loadCompetitions()
 clubs = loadClubs()
+date_now = datetime.now()
 
 
 @app.route('/')
@@ -25,16 +27,21 @@ def index():
     return render_template('index.html')
 
 
+@app.template_filter()
+def str_to_datetime(value):
+    return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+
+
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
+
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
     except IndexError:
         return redirect(url_for('index'))
     else:
-        return render_template('welcome.html',club=club,competitions=competitions)
+        return render_template('welcome.html',club=club, competitions=competitions, date_now=date_now)
           
-
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
@@ -87,14 +94,7 @@ def purchasePlaces():
         competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
         club["points"] = int(club["points"]) - placesRequired     
         flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
-
-# Ils devraient voir un message confirmant le nombre de places achetées, ou un
-# message indiquant que le concours est complet. Les points utilisés doivent être
-# déduits du total précédent.
-
-
-# TODO: Add route for points display
+    return render_template('welcome.html', club=club, competitions=competitions, date_now=date_now)
 
 
 @app.route('/logout')
