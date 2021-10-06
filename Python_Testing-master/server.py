@@ -19,26 +19,34 @@ app.secret_key = 'something_special'
 competitions = loadCompetitions()
 clubs = loadClubs()
 
-places_booked_counter = 0
 
 
 @app.route('/')
 def index():
+    """
+    Page de connexion
+    """
     return render_template('index.html')
 
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
+    """
+    Affichage des compétitions
+    """
     try:
         club = [club for club in clubs if club['email'] == request.form['email']][0]
     except IndexError:
         return redirect(url_for('index'))
     else:
-        return render_template('welcome.html',club=club,competitions=competitions)
+        return render_template('welcome.html',club=club, competitions=competitions)
           
 
 @app.route('/book/<competition>/<club>')
 def book(competition, club):
+    """
+    Affichage de la compétition sélectionné
+    """
 
     clubs_list = []
     for clb in clubs:
@@ -61,6 +69,9 @@ def book(competition, club):
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
+    """
+    Confirme la réservation et retourne à l'affichage des compétitions
+    """
    
     competitions_list = []
     for comp in competitions:
@@ -75,8 +86,8 @@ def purchasePlaces():
     club = clubs_list[0]
     
     placesRequired = int(request.form['places'])  # correspond au nombres de places voulues entrées dans le formulaire
-    
-    global places_booked_counter
+  
+    places_booked_counter = 0
     places_booked_counter += int(request.form['places'])
 
     if places_booked_counter > 12 :
@@ -84,12 +95,9 @@ def purchasePlaces():
     elif int(request.form['places']) > int(club["points"]):
         flash("You don't have enough points")
     else:
-        if int(competition['numberOfPlaces']) < int(request.form['places']):
-            flash("There is not enough places in the competitions !")
-        else:
-            competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
-            club["points"] = int(club["points"]) - placesRequired     
-            flash('Great-booking complete!')
+        competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - placesRequired
+        club["points"] = int(club["points"]) - (placesRequired + 2)  
+        flash('Great, booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
