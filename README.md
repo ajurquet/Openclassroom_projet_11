@@ -8,6 +8,8 @@ Cette application web a été créée sous Flask, un framework utilisant le lang
 
 Le but de ce projet est de débugger et de tester les fonctions du programme, ainsi que ses performances.
 
+Lien vers le repository initial : https://github.com/OpenClassrooms-Student-Center/Python_Testing
+
 
 ## Prérequis
 
@@ -88,6 +90,12 @@ flask run
 Pour naviguez sur le site, vous devez entrer l'adresse suivante dans le navigateur : http://127.0.0.1:5000/
 
 Afin de tester les différentes fonctionnalités de l'application, vous devez vous connecter grâce à une adresse email fournit dans le fichier "clubs.json".
+
+### Rapport de test et de performance
+
+Les fonctionnalités de l'application ont été testé avec Pytest, la couverture de test est de 96 %.
+
+Les performances du site ont été testés avec Locust, et les temps de chargement respectent les consignes (moins de 5 secondes pour le chargement, et moins de 2 secondes pour les mises à jour).
 
 ## Rapport flake8
 
